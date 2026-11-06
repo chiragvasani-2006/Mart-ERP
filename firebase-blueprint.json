@@ -1,0 +1,129 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product",
+      "description": "Product inventory document",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 200 },
+        "nameLower": { "type": "string", "maxLength": 200 },
+        "quantity": { "type": "number" },
+        "purchasePrice": { "type": "number" },
+        "mrp": { "type": "number" },
+        "sellingPrice": { "type": "number" },
+        "minStock": { "type": "number" },
+        "expiryDate": { "type": "string" },
+        "barcode": { "type": "string", "maxLength": 100 },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["name", "nameLower", "quantity", "purchasePrice", "mrp", "sellingPrice", "minStock", "barcode"]
+    },
+    "Supplier": {
+      "title": "Supplier",
+      "description": "Supplier information and balances",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string", "maxLength": 200 },
+        "nameLower": { "type": "string", "maxLength": 200 },
+        "totalPurchase": { "type": "number" },
+        "totalPaid": { "type": "number" },
+        "totalPending": { "type": "number" },
+        "status": { "type": "string", "enum": ["Pending", "Partial", "Paid"] },
+        "createdAt": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["name", "nameLower", "totalPurchase", "totalPaid", "totalPending", "status"]
+    },
+    "PurchaseHistory": {
+      "title": "PurchaseHistory",
+      "description": "Stock purchase invoice record from supplier",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "supplierId": { "type": "string" },
+        "invoiceNumber": { "type": "string", "maxLength": 100 },
+        "invoiceDate": { "type": "string" },
+        "amount": { "type": "number" },
+        "paymentStatus": { "type": "string", "enum": ["Pending", "Partial", "Paid"] },
+        "sourceType": { "type": "string", "enum": ["manual", "ocr", "excel"] },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["supplierId", "invoiceNumber", "amount", "paymentStatus", "sourceType"]
+    },
+    "Sale": {
+      "title": "Sale",
+      "description": "Completed POS sale record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "discountType": { "type": "string", "enum": ["flat", "percentage"] },
+        "discountValue": { "type": "number" },
+        "subtotal": { "type": "number" },
+        "total": { "type": "number" },
+        "profit": { "type": "number" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["subtotal", "total", "profit"]
+    },
+    "StockHistory": {
+      "title": "StockHistory",
+      "description": "Stock adjustment history log",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "productId": { "type": "string" },
+        "productName": { "type": "string", "maxLength": 200 },
+        "changeType": { "type": "string", "enum": ["New Purchase", "Damaged", "Expired", "Manual Correction", "POS Sale", "Customer Return"] },
+        "quantityChange": { "type": "number" },
+        "reason": { "type": "string", "maxLength": 500 },
+        "relatedDocId": { "type": "string" },
+        "createdAt": { "type": "string" }
+      },
+      "required": ["productId", "productName", "changeType", "quantityChange"]
+    },
+    "StoreSettings": {
+      "title": "StoreSettings",
+      "description": "Store branding and profile settings",
+      "type": "object",
+      "properties": {
+        "appName": { "type": "string", "maxLength": 100 },
+        "logoUrl": { "type": "string" },
+        "storeName": { "type": "string", "maxLength": 200 },
+        "phone": { "type": "string", "maxLength": 50 },
+        "address": { "type": "string", "maxLength": 500 },
+        "adminPasswordHash": { "type": "string" },
+        "updatedAt": { "type": "string" }
+      },
+      "required": ["appName", "storeName"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": "Product",
+      "description": "Product collection"
+    },
+    "/suppliers/{supplierId}": {
+      "schema": "Supplier",
+      "description": "Suppliers collection"
+    },
+    "/purchaseHistory/{purchaseId}": {
+      "schema": "PurchaseHistory",
+      "description": "Purchase history records"
+    },
+    "/sales/{saleId}": {
+      "schema": "Sale",
+      "description": "Sales records"
+    },
+    "/stockHistory/{historyId}": {
+      "schema": "StockHistory",
+      "description": "Stock history log"
+    },
+    "/storeSettings/{settingId}": {
+      "schema": "StoreSettings",
+      "description": "Single store settings document"
+    }
+  }
+}
